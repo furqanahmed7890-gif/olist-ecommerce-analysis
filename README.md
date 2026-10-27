@@ -1,5 +1,7 @@
 # Olist E-Commerce: Why Customers Don't Come Back
 
+**Live demo: [olist-ecommerce-analysis-fa.streamlit.app](https://olist-ecommerce-analysis-fa.streamlit.app/)**
+
 An end-to-end SQL analysis of 99,441 real orders from Olist, a Brazilian online marketplace (2016-2018),
 answering two business questions:
 
