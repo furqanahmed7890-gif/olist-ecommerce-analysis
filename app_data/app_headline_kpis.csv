@@ -1,0 +1,2 @@
+orders,customers,revenue,returned_pct,late_pct,avg_review_on_time,avg_review_late,late_share_of_bad_reviews_pct
+99441,96096,15739137.0,2.17,6.77,4.29,2.27,32.5

@@ -1,0 +1,40 @@
+dimension,value,customers,return_180d_pct,ci95_pct
+Customer state,ES,1205,2.41,0.87
+Customer state,SP,22335,2.22,0.19
+Customer state,RJ,7654,2.12,0.32
+Customer state,GO,1202,2.08,0.81
+Customer state,MG,6757,1.89,0.33
+Customer state,RS,3263,1.84,0.46
+Customer state,BA,1955,1.64,0.56
+Customer state,PR,2846,1.62,0.46
+Customer state,DF,1173,1.62,0.72
+Customer state,SC,2197,1.46,0.5
+First delivery,On time,51558,2.02,0.12
+First delivery,Late,3671,1.61,0.41
+First order category,fashion_bags_accessories,1157,3.2,1.01
+First order category,bed_bath_table,5443,2.74,0.43
+First order category,sports_leisure,4566,2.67,0.47
+First order category,furniture_decor,3760,2.47,0.5
+First order category,garden_tools,2332,2.14,0.59
+First order category,perfumery,1990,2.06,0.62
+First order category,baby,1513,2.05,0.71
+First order category,health_beauty,4388,2.03,0.42
+First order category,electronics,1408,1.78,0.69
+First order category,watches_gifts,2682,1.72,0.49
+First order category,telephony,2639,1.71,0.49
+First order category,toys,2649,1.7,0.49
+First order category,housewares,2969,1.62,0.45
+First order category,stationery,1389,1.58,0.66
+First order category,auto,1914,1.57,0.56
+First order category,computers_accessories,3836,1.56,0.39
+First order category,unknown,1047,1.53,0.74
+First order category,cool_stuff,2610,1.03,0.39
+First order value,1. under R$50,9708,2.21,0.29
+First order value,4. R$200+,11291,2.13,0.27
+First order value,3. R$100-200,17995,1.92,0.2
+First order value,2. R$50-100,17343,1.85,0.2
+First review score,5 stars,31910,2.15,0.16
+First review score,3 stars,4864,1.97,0.39
+First review score,4 stars,11092,1.82,0.25
+First review score,1 stars,6175,1.68,0.32
+First review score,2 stars,1837,1.52,0.56

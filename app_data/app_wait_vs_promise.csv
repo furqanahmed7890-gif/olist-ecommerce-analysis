@@ -1,0 +1,11 @@
+actual_wait,vs_promise,orders,avg_review
+1. under 7 days,Late,58,3.98
+1. under 7 days,On time,25386,4.42
+2. 7-13 days,Late,307,3.36
+2. 7-13 days,On time,39885,4.32
+3. 14-20 days,Late,528,2.91
+3. 14-20 days,On time,17248,4.18
+4. 21-29 days,Late,1997,2.59
+4. 21-29 days,On time,5957,3.96
+5. 30+ days,Late,3491,1.86
+5. 30+ days,On time,967,3.67

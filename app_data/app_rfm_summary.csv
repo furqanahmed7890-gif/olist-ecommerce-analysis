@@ -1,0 +1,8 @@
+segment,customers,pct_of_customers,revenue,pct_of_revenue,avg_spend,avg_days_since_last_order,avg_review
+1. Loyal,1091,1.1,357040.0,2.3,327.0,137.0,4.27
+"2. Repeat, going quiet",974,1.0,306447.0,1.9,315.0,359.0,4.24
+3. New big spender,14754,15.5,4477304.0,28.4,303.0,142.0,4.09
+4. New,22150,23.3,1619821.0,10.3,73.0,140.0,4.22
+5. Cooling off,18610,19.6,2857247.0,18.2,154.0,270.0,3.97
+6. Lost big spender,14315,15.1,4436567.0,28.2,310.0,445.0,4.07
+7. Lost,23095,24.3,1684711.0,10.7,73.0,446.0,4.16
