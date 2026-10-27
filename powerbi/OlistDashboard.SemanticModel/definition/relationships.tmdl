@@ -1,0 +1,23 @@
+relationship orders_to_customers
+	fromColumn: fact_orders.customer_unique_id
+	toColumn: dim_customers.customer_unique_id
+
+relationship orders_to_calendar
+	fromColumn: fact_orders.order_date
+	toColumn: Calendar.Date
+
+relationship 8e9f295a-baec-41ef-b017-406ed408451d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fact_orders.purchase_month
+	toColumn: LocalDateTable_cd3dc924-bb9a-4f82-88d3-06496fa176fe.Date
+
+relationship 66a6e082-4948-4368-bf78-9b2ea302c8da
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_customers.cohort_month
+	toColumn: LocalDateTable_f2553aad-9b75-4da7-961b-b1fc686c5bd8.Date
+
+relationship 9180c5ba-c2a3-4b0d-8b81-772096dfae9b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: cohort_retention.cohort_month
+	toColumn: LocalDateTable_ddac2d04-39c6-4f89-a60a-7a8501feef41.Date
+

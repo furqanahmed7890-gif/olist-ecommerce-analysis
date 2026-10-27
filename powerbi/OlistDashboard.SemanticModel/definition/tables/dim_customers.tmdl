@@ -1,0 +1,163 @@
+table dim_customers
+	lineageTag: 27109bb5-886b-4aca-8041-c34c06f02160
+
+	measure 'Ever Returned Rate' = DIVIDE ( CALCULATE ( COUNTROWS ( dim_customers ), dim_customers[ever_returned] == TRUE (), NOT ISBLANK ( dim_customers[cohort_month] ) ), CALCULATE ( COUNTROWS ( dim_customers ), NOT ISBLANK ( dim_customers[cohort_month] ) ) )
+		formatString: 0.0%
+		lineageTag: c323c410-5a17-4d41-8320-ce7053f0a2bd
+
+	measure 'Eligible Customers' = COUNTROWS ( FILTER ( dim_customers, NOT ISBLANK ( dim_customers[returned_180d] ) && dim_customers[cohort_month] >= DATE ( 2017, 1, 1 ) && dim_customers[cohort_month] <= DATE ( 2018, 2, 1 ) ) )
+		formatString: #,0
+		lineageTag: e4362d87-a1d5-4319-8f25-5b426f009525
+
+	measure 'Return Rate 180d' = DIVIDE ( COUNTROWS ( FILTER ( dim_customers, dim_customers[returned_180d] == TRUE () && dim_customers[cohort_month] >= DATE ( 2017, 1, 1 ) && dim_customers[cohort_month] <= DATE ( 2018, 2, 1 ) ) ), [Eligible Customers] )
+		formatString: 0.0%
+		lineageTag: 5e33ccd4-3595-4c2a-99cb-db96962ec9bb
+
+	measure 'Return Rate 180d (1,000+ customers)' = IF ( [Eligible Customers] >= 1000, [Return Rate 180d] )
+		formatString: 0.0%
+		lineageTag: 8d9e9e88-c1a5-4f5c-b1a5-354018a05a48
+
+	measure 'Return Rate 180d (delivered first orders)' = IF ( NOT ISBLANK ( SELECTEDVALUE ( dim_customers[first_delivery] ) ), [Return Rate 180d] )
+		formatString: 0.0%
+		lineageTag: 4b82bdb5-b79b-4381-aa87-4edfc35053e3
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: 5fb23f53-9ff8-485a-9481-40d430f8f5e0
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+	column state
+		dataType: string
+		lineageTag: ca64feeb-656c-481b-b297-016c61de3f4c
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column segment
+		dataType: string
+		lineageTag: 55b545fa-1844-46fc-aa52-d0b7d0ae813e
+		summarizeBy: none
+		sourceColumn: segment
+
+		annotation SummarizationSetBy = Automatic
+
+	column r_score
+		dataType: double
+		lineageTag: ece15e66-94ba-440f-b944-afe14e4a8a91
+		summarizeBy: sum
+		sourceColumn: r_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column f_score
+		dataType: double
+		lineageTag: 1e9915a0-dc2e-4cf2-8449-2aaa58ae5e84
+		summarizeBy: sum
+		sourceColumn: f_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column m_score
+		dataType: double
+		lineageTag: b43d561b-bdec-4b8b-a4db-80a341db0f2d
+		summarizeBy: sum
+		sourceColumn: m_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column monetary
+		dataType: double
+		lineageTag: 8799410a-bd7f-434c-a55e-8a23cf614ed8
+		summarizeBy: sum
+		sourceColumn: monetary
+
+		annotation SummarizationSetBy = Automatic
+
+	column recency_days
+		dataType: double
+		lineageTag: 4155daa0-8ed7-4083-ae93-98a4c971fc05
+		summarizeBy: sum
+		sourceColumn: recency_days
+
+		annotation SummarizationSetBy = Automatic
+
+	column cohort_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3a826245-2ed5-48e8-90fa-3e8ee2880c2b
+		summarizeBy: none
+		sourceColumn: cohort_month
+
+		variation Variation
+			isDefault
+			relationship: 66a6e082-4948-4368-bf78-9b2ea302c8da
+			defaultHierarchy: LocalDateTable_f2553aad-9b75-4da7-961b-b1fc686c5bd8.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_category
+		dataType: string
+		lineageTag: 604ed7e1-cc60-43fb-a059-c0cb373cab58
+		summarizeBy: none
+		sourceColumn: first_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_order_late
+		dataType: boolean
+		lineageTag: 2212d588-f825-49c9-a2b0-855b50114245
+		summarizeBy: none
+		sourceColumn: first_order_late
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_review_score
+		dataType: double
+		lineageTag: 47b6cb48-c6e2-49d8-86fc-019fcfa177d1
+		summarizeBy: sum
+		sourceColumn: first_review_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column returned_180d
+		dataType: boolean
+		lineageTag: dc074ee8-55bb-4f59-97c8-fb74dcb18e77
+		summarizeBy: none
+		sourceColumn: returned_180d
+
+		annotation SummarizationSetBy = Automatic
+
+	column ever_returned
+		dataType: boolean
+		lineageTag: a32e4fc7-79ce-403f-bb56-03b05d0c7698
+		summarizeBy: none
+		sourceColumn: ever_returned
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_delivery
+		dataType: string
+		lineageTag: 45cf300b-7366-400e-a7d3-2ebe1b416a33
+		summarizeBy: none
+		sourceColumn: first_delivery
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_customers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "dim_customers.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Blanks = Table.TransformColumns(Promoted, {}, each if _ = "" then null else _),
+				    Typed = Table.TransformColumnTypes(Blanks, {{"customer_unique_id", type text}, {"state", type text}, {"segment", type text}, {"r_score", type number}, {"f_score", type number}, {"m_score", type number}, {"monetary", type number}, {"recency_days", type number}, {"cohort_month", type date}, {"first_category", type text}, {"first_order_late", type logical}, {"first_review_score", type number}, {"returned_180d", type logical}, {"ever_returned", type logical}}, "en-US"),
+				    Added = Table.AddColumn(Typed, "first_delivery", each if [first_order_late] = true then "Late" else if [first_order_late] = false then "On time" else null, type text)
+				in
+				    Added
+
+	annotation PBI_ResultType = Table
+

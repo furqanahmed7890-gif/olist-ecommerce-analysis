@@ -1,0 +1,74 @@
+table cohort_retention
+	lineageTag: 56ec6e94-0d6f-414d-adb0-dce5c9a01dc9
+
+	column cohort_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 09aa746d-92d9-430a-b6b2-fb3dee76cc67
+		summarizeBy: none
+		sourceColumn: cohort_month
+
+		variation Variation
+			isDefault
+			relationship: 9180c5ba-c2a3-4b0d-8b81-772096dfae9b
+			defaultHierarchy: LocalDateTable_ddac2d04-39c6-4f89-a60a-7a8501feef41.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column cohort_customers
+		dataType: int64
+		lineageTag: 4bdb8320-b46d-4a78-b442-66d9d63063e7
+		summarizeBy: sum
+		sourceColumn: cohort_customers
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_number
+		dataType: int64
+		lineageTag: 020a9e8d-ac5d-4711-b21b-71cb17d40f71
+		summarizeBy: sum
+		sourceColumn: month_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column active_customers
+		dataType: int64
+		lineageTag: 4af78daa-4640-442d-abde-073b8e652660
+		summarizeBy: sum
+		sourceColumn: active_customers
+
+		annotation SummarizationSetBy = Automatic
+
+	column retention_pct
+		dataType: double
+		lineageTag: 213006a8-1065-4c0d-896b-5041b1c80cb3
+		summarizeBy: sum
+		sourceColumn: retention_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: string
+		lineageTag: 4dc63dca-80e4-464c-a3b8-e0bc9718a2fc
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	partition cohort_retention = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "cohort_retention.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Blanks = Table.TransformColumns(Promoted, {}, each if _ = "" then null else _),
+				    Typed = Table.TransformColumnTypes(Blanks, {{"cohort_month", type date}, {"cohort_customers", Int64.Type}, {"month_number", Int64.Type}, {"active_customers", Int64.Type}, {"retention_pct", type number}}, "en-US"),
+				    Added = Table.AddColumn(Typed, "month", each Date.ToText([cohort_month], "yyyy-MM"), type text),
+				    Filtered = Table.SelectRows(Added, each [month_number] >= 1 and [month_number] <= 12)
+				in
+				    Filtered
+
+	annotation PBI_ResultType = Table
+

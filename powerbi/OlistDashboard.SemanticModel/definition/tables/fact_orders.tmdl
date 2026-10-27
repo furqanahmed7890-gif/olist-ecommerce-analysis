@@ -1,0 +1,223 @@
+table fact_orders
+	lineageTag: c44fc922-ee2e-497c-b312-361e1fb513fc
+
+	measure Orders = COUNTROWS ( fact_orders )
+		formatString: #,0
+		lineageTag: 5fcc0ed3-a606-46d7-acad-dd9f84286b54
+
+	measure Revenue = SUM ( fact_orders[payment_value] )
+		formatString: #,0
+		lineageTag: 9dea8bbd-a2b6-4c8d-9151-3d92b2710706
+
+	measure Customers = DISTINCTCOUNT ( fact_orders[customer_unique_id] )
+		formatString: #,0
+		lineageTag: ff7d0e02-fa2c-414a-b621-9ec84a55f4c1
+
+	measure 'Avg Order Value' = DIVIDE ( [Revenue], [Orders] )
+		formatString: #,0.00
+		lineageTag: 11f79772-08db-4569-83d4-914bda346716
+
+	measure 'Delivered Orders' = CALCULATE ( [Orders], fact_orders[order_status] = "delivered", NOT ISBLANK ( fact_orders[is_late] ) )
+		formatString: #,0
+		lineageTag: c37b14a8-6f64-4056-a7c2-aef88a2bbce5
+
+	measure 'Late Orders' = CALCULATE ( [Orders], fact_orders[order_status] = "delivered", fact_orders[is_late] = TRUE () )
+		formatString: #,0
+		lineageTag: 8603492d-d8a5-446b-98d9-1a70906737f3
+
+	measure 'Late Rate' = DIVIDE ( [Late Orders], [Delivered Orders] )
+		formatString: 0.0%
+		lineageTag: d03a76b2-a184-456a-9487-3898fb4dbbae
+
+	measure 'Avg Review' = AVERAGE ( fact_orders[review_score] )
+		formatString: 0.00
+		lineageTag: 1750bbaa-0d31-43c6-aab6-1cd905d1fd19
+
+	measure 'Avg Review On Time' = CALCULATE ( [Avg Review], fact_orders[is_late] == FALSE () )
+		formatString: 0.00
+		lineageTag: 92f760c3-32d7-4ff6-9ba7-5bc1bb9f05bf
+
+	measure 'Avg Review (delivered)' = CALCULATE ( [Avg Review], NOT ISBLANK ( fact_orders[is_late] ) )
+		formatString: 0.00
+		lineageTag: 2a0eeacb-fe8e-4b88-a993-4380307a2b21
+
+	measure 'Avg Review Late' = CALCULATE ( [Avg Review], fact_orders[is_late] = TRUE () )
+		formatString: 0.00
+		lineageTag: 5c3759bd-bffc-4125-a31e-767b597e430e
+
+	measure 'One Star Share' = DIVIDE ( CALCULATE ( [Orders], fact_orders[review_score] == 1 ), CALCULATE ( [Orders], NOT ISBLANK ( fact_orders[review_score] ) ) )
+		formatString: 0.0%
+		lineageTag: 549969ca-bb16-43d5-ae80-47cee2260cc0
+
+	measure 'One Star Share (delivered)' = CALCULATE ( [One Star Share], NOT ISBLANK ( fact_orders[is_late] ) )
+		formatString: 0.0%
+		lineageTag: d337027c-f8ce-401f-8eb1-0e2659b0058c
+
+	measure 'Late Share of Bad Reviews' = DIVIDE ( CALCULATE ( [Orders], fact_orders[review_score] <= 2, NOT ISBLANK ( fact_orders[review_score] ), fact_orders[is_late] == TRUE () ), CALCULATE ( [Orders], fact_orders[review_score] <= 2, NOT ISBLANK ( fact_orders[review_score] ), NOT ISBLANK ( fact_orders[is_late] ) ) )
+		formatString: 0.0%
+		lineageTag: bd420eeb-ca30-49df-be63-22c09b656c57
+
+	measure 'Customer Share' = DIVIDE ( [Customers], CALCULATE ( [Customers], ALL ( dim_customers[segment] ) ) )
+		formatString: 0.0%
+		lineageTag: f4a2ad40-b08b-490b-ab23-3ad7c520ce26
+
+	measure 'Segment Revenue Share' = DIVIDE ( [Revenue], CALCULATE ( [Revenue], ALL ( dim_customers[segment] ) ) )
+		formatString: 0.0%
+		lineageTag: bdd08b5d-684f-4010-ad11-b8096ca69c28
+
+	column order_id
+		dataType: string
+		lineageTag: 96884418-6a97-4520-bf8a-a2366130b9a5
+		summarizeBy: none
+		sourceColumn: order_id
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: 19cdb22f-5585-41d7-b0db-31485de008c8
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+	column order_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 6ab5e07f-85f7-4954-a2d6-bcd3b663d675
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column purchase_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c94008b5-5b95-4809-bc9e-af831671d9a0
+		summarizeBy: none
+		sourceColumn: purchase_month
+
+		variation Variation
+			isDefault
+			relationship: 8e9f295a-baec-41ef-b017-406ed408451d
+			defaultHierarchy: LocalDateTable_cd3dc924-bb9a-4f82-88d3-06496fa176fe.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_state
+		dataType: string
+		lineageTag: 5885b2c2-3820-402e-a390-06b5bef0790b
+		summarizeBy: none
+		sourceColumn: customer_state
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: 18f3bd18-1770-4130-8119-eb5bde9275fe
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: ed4b5f43-e1a9-4caa-beb1-37a7eeae4488
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_type
+		dataType: string
+		lineageTag: e620d498-1631-44e2-b462-3a414803f06e
+		summarizeBy: none
+		sourceColumn: payment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_value
+		dataType: double
+		lineageTag: 275669f4-3af3-4f2b-b0d0-785ca62a024d
+		summarizeBy: sum
+		sourceColumn: payment_value
+
+		annotation SummarizationSetBy = Automatic
+
+	column item_value
+		dataType: double
+		lineageTag: 796631de-116a-477f-bfb2-4518f8e5c565
+		summarizeBy: sum
+		sourceColumn: item_value
+
+		annotation SummarizationSetBy = Automatic
+
+	column freight_value
+		dataType: double
+		lineageTag: 29b86b6d-4b0b-4dce-a79e-8e80f775b62b
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivery_days
+		dataType: double
+		lineageTag: a4867d4a-7471-4c26-b417-761743d3b472
+		summarizeBy: sum
+		sourceColumn: delivery_days
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_late
+		dataType: double
+		lineageTag: 7951432e-2036-46aa-8435-f7ad2c71de5c
+		summarizeBy: sum
+		sourceColumn: days_late
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_late
+		dataType: boolean
+		lineageTag: fa83c64e-c3a3-4d2c-b03c-752abf2f3cd7
+		summarizeBy: none
+		sourceColumn: is_late
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivery_vs_promise
+		dataType: string
+		lineageTag: 3ec0c268-cf96-4d9d-bb02-8980c32413b2
+		summarizeBy: none
+		sourceColumn: delivery_vs_promise
+
+		annotation SummarizationSetBy = Automatic
+
+	column review_score
+		dataType: double
+		lineageTag: 769d4af3-e96d-427b-bccd-78f53230af67
+		summarizeBy: sum
+		sourceColumn: review_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_number
+		dataType: int64
+		lineageTag: ec72fb90-4a2a-4303-8519-b8d6bb8f890d
+		summarizeBy: sum
+		sourceColumn: order_number
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_orders = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "fact_orders.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Blanks = Table.TransformColumns(Promoted, {}, each if _ = "" then null else _),
+				    Typed = Table.TransformColumnTypes(Blanks, {{"order_id", type text}, {"customer_unique_id", type text}, {"order_date", type date}, {"purchase_month", type date}, {"customer_state", type text}, {"order_status", type text}, {"category", type text}, {"payment_type", type text}, {"payment_value", type number}, {"item_value", type number}, {"freight_value", type number}, {"delivery_days", type number}, {"days_late", type number}, {"is_late", type logical}, {"delivery_vs_promise", type text}, {"review_score", type number}, {"order_number", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

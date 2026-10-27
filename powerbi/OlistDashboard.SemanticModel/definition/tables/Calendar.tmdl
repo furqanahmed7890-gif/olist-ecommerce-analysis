@@ -1,0 +1,36 @@
+table Calendar
+	lineageTag: 5530c5e6-94e3-474e-9bef-3b45c23d709a
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: yyyy-mm-dd
+		lineageTag: 1618e9a6-5498-4b12-b9c2-44ba1e178aa6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+	column Year
+		dataType: int64
+		lineageTag: 8094bf00-ff08-4e21-aeb2-8e3db82ec1c5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+	column Month
+		dataType: string
+		lineageTag: 773b4a22-1a52-483b-afe6-6a7c5a1eb3f8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month]
+
+	partition Calendar = calculated
+		mode: import
+		source =
+				ADDCOLUMNS (
+				    CALENDAR ( DATE ( 2017, 1, 1 ), DATE ( 2018, 8, 31 ) ),
+				    "Year", YEAR ( [Date] ),
+				    "Month", FORMAT ( [Date], "yyyy-mm" )
+				)
+

@@ -75,7 +75,7 @@ sql/                         Every query: schema, order_facts, cohorts, RFM, Pow
 app.py                       Streamlit entry point (5 pages: overview, retention, delivery, segments, about)
 db.py                        PostgreSQL if configured, else the bundled SQLite snapshot
 app_data/                    Snapshot of the app's summary tables (runs the public demo)
-powerbi/                     DAX measures, build guide, report and screenshots
+powerbi/                     Power BI report (.pbix and PBIP project), screenshots
 images/                      Charts used in this README
 ```
 
@@ -97,10 +97,24 @@ images/                      Charts used in this README
    streamlit run app.py
    ```
 
-## Power BI
-The report is built on three tables from [`sql/powerbi_views.sql`](sql/powerbi_views.sql) (`fact_orders`,
-`dim_customers`, `cohort_retention`) with the measures in [`powerbi/measures.dax`](powerbi/measures.dax).
-[`powerbi/BUILD_GUIDE.md`](powerbi/BUILD_GUIDE.md) has the step-by-step build.
+## Power BI report
+A 4-page report (Overview, Retention, Delivery & Reviews, Customer Segments) on a star schema from
+[`sql/powerbi_views.sql`](sql/powerbi_views.sql): `fact_orders` and `dim_customers` joined on the customer, a
+`Calendar` date table, and the pre-aggregated `cohort_retention` table, with 21 DAX measures.
+
+| | |
+|---|---|
+| ![Overview](powerbi/screenshots/overview.png) | ![Retention](powerbi/screenshots/retention.png) |
+| ![Delivery & Reviews](powerbi/screenshots/delivery.png) | ![Customer Segments](powerbi/screenshots/segments.png) |
+
+- [`powerbi/OlistDashboard.Report`](powerbi/OlistDashboard.Report) and
+  [`powerbi/OlistDashboard.SemanticModel`](powerbi/OlistDashboard.SemanticModel): the same report as a Power BI
+  Project (PBIP), so the model, relationships and every DAX measure are readable as text
+  ([measures](powerbi/OlistDashboard.SemanticModel/definition/tables/fact_orders.tmdl)). To open the project
+  version, run notebook 06 to create `powerbi/data/`, set the `DataFolder` parameter to that folder, and
+  refresh.
+- DAX detail worth noting: Power BI treats a blank as equal to `FALSE`, so measures like "average review of
+  on-time orders" use strict `==` comparisons to keep undelivered orders out.
 
 ## Limitations
 - Observational data: the link between a late first delivery and not returning is a correlation, not an

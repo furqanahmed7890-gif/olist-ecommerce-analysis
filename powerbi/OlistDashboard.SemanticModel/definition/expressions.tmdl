@@ -1,0 +1,5 @@
+expression DataFolder = "C:\Users\furqa\Documents\olist-ecommerce-analysis\powerbi\data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: ca614a8a-618d-434e-a0ef-4bcdf64a5e5a
+
+	annotation PBI_ResultType = Text
+
